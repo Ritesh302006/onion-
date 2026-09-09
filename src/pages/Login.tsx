@@ -44,7 +44,7 @@ export default function Login() {
           <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-6 text-center">Select Role to Continue</h3>
           
           <div className="space-y-4">
-            {users.map(user => (
+            {users.filter(u => u.role === 'admin' || u.role === 'officer').map(user => (
               <button
                 key={user.id}
                 onClick={() => handleLogin(user.id)}
@@ -66,9 +66,6 @@ export default function Login() {
             ))}
           </div>
           
-          <div className="mt-8 pt-6 border-t border-slate-100 text-center flex flex-col items-center">
-             <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">SIH 2024 PROTOTYPE</span>
-          </div>
         </div>
       </div>
     </div>

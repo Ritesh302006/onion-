@@ -27,8 +27,6 @@ const DEFAULT_MODEL: AIModel = {
 const DEMO_USERS: User[] = [
   { id: 'u-officer-1', name: 'Ravi Kumar', role: 'officer', centerId: 'PC-Maha-01' },
   { id: 'u-admin-1', name: 'Admin Priya', role: 'admin' },
-  { id: 'u-farmer-1', name: 'Kisan Ramesh', role: 'farmer' },
-  { id: 'u-reviewer-1', name: 'Inspector Singh', role: 'reviewer' },
 ];
 
 interface AppState {

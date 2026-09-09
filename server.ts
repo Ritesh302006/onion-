@@ -97,13 +97,23 @@ For each onion detected, provide:
 1. It's condition category, which must be exactly one of: ["healthy", "rotten", "damaged", "sprouted", "undersized", "discolored"]
 2. It's 2D bounding box in the format [ymin, xmin, ymax, xmax], where coordinates are scaled from 0 to 1000 (e.g. [120, 200, 350, 400]).
 
+IMPORTANT: You MUST be extremely strict and carefully look for ANY defects. Do NOT default to "healthy".
+- Look for dark spots or rot -> "rotten"
+- Look for cuts, bruises, or mechanical damage -> "damaged"
+- Look for green shoots -> "sprouted"
+- Look for abnormal skin color -> "discolored"
+- Look for significantly smaller onions compared to the rest -> "undersized"
+If there is ANY sign of these defects, you MUST categorize them as such, not "healthy".
+
 Return a JSON object with a single key "onions" containing an array of these detected objects. If no onions are detected, return {"onions": [], "error": "No onions detected in the image"}.
 
 Example output:
 {
   "onions": [
     { "category": "healthy", "box_2d": [100, 50, 300, 250] },
-    { "category": "rotten", "box_2d": [350, 400, 500, 600] }
+    { "category": "rotten", "box_2d": [350, 400, 500, 600] },
+    { "category": "sprouted", "box_2d": [600, 100, 750, 300] },
+    { "category": "damaged", "box_2d": [100, 500, 250, 700] }
   ]
 }`
                   }

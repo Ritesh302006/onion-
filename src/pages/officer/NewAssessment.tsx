@@ -82,7 +82,13 @@ export default function NewAssessment() {
         throw new Error("Failed to analyze image");
       }
 
-      const aiResult = await response.json();
+      const textResult = await response.text();
+      let aiResult;
+      try {
+        aiResult = JSON.parse(textResult);
+      } catch (e) {
+        throw new Error("Invalid response from AI server");
+      }
       
       if (aiResult.error) {
         alert("AI Error: " + aiResult.error);

@@ -1,6 +1,5 @@
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/lib/store";
-import { QRCodeSVG } from "qrcode.react";
 import * as htmlToImage from "html-to-image";
 import { jsPDF } from "jspdf";
 import {
@@ -67,7 +66,6 @@ export default function ReportView() {
   };
 
   const isFarmer = currentUser?.role === "farmer";
-  const qrData = `https://ais-dev-tkkq7ek4sqnmak7zjuawih-41572642595.asia-southeast1.run.app/report/${lot.id}?view=certificate`;
 
   const toggleView = () => {
     if (isCertificateView) {
@@ -172,10 +170,7 @@ export default function ReportView() {
           </div>
 
           <div className="flex flex-col items-center">
-            <div className="bg-white dark:bg-slate-900 p-3 rounded-lg shrink-0 hidden sm:block border-2 border-slate-200 dark:border-slate-800 shadow-sm">
-              <QRCodeSVG value={qrData} size={100} />
-            </div>
-            <p className="hidden sm:block text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">Scan for Certificate</p>
+            {/* Removed QR Code block */}
           </div>
         </div>
 
@@ -266,10 +261,7 @@ export default function ReportView() {
                    )}
                 </div>
                 <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
-                   <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-sm inline-block">
-                     <QRCodeSVG value={qrData} size={80} />
-                   </div>
-                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-3 text-center">Scan to Verify Digital Passport</p>
+                   {/* Removed QR code */}
                 </div>
               </div>
             </div>

@@ -52,7 +52,14 @@ export function LocationPicker({ onLocationChange, className = '' }: LocationPic
           const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
           if (!response.ok) throw new Error('Reverse geocoding failed');
           
-          const data = await response.json();
+          const text = await response.text();
+          let data;
+          try {
+            data = JSON.parse(text);
+          } catch (e) {
+            throw new Error('Reverse geocoding returned invalid JSON');
+          }
+          
           const address = data.address || {};
           
           const locData: LocationData = {

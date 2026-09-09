@@ -32,7 +32,13 @@ export default function AIChat() {
         body: JSON.stringify({ message: userMsg, history: messages })
       });
       
-      const data = await res.json();
+      const textRes = await res.text();
+      let data;
+      try {
+        data = JSON.parse(textRes);
+      } catch (e) {
+        throw new Error('Invalid JSON response');
+      }
       
       if (res.ok && data.text) {
         setMessages([...newMessages, { role: 'model', text: data.text }]);
