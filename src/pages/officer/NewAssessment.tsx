@@ -44,28 +44,69 @@ export default function NewAssessment() {
     if (step === "details") setStep("capture");
   };
 
-  const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        };
+        img.onerror = (err) => reject(err);
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUri(reader.result as string);
+      try {
         setStep("analyzing");
-        runAIAnalysis(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        const compressedUri = await compressImage(file);
+        setImageUri(compressedUri);
+        runAIAnalysis(compressedUri);
+      } catch (err) {
+        console.error("Error compressing image", err);
+        alert("Failed to process image locally.");
+        setStep("capture");
+      }
     }
     e.target.value = '';
   };
 
-  const handleAddMoreImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddMoreImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAdditionalImages((prev) => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedUri = await compressImage(file);
+        setAdditionalImages((prev) => [...prev, compressedUri]);
+      } catch (err) {
+        console.error("Error compressing additional image", err);
+      }
     }
     e.target.value = '';
   };
@@ -78,16 +119,16 @@ export default function NewAssessment() {
         body: JSON.stringify({ imageUri: imgUri }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to analyze image");
-      }
-
-      const textResult = await response.text();
+      let textResult = await response.text();
       let aiResult;
       try {
         aiResult = JSON.parse(textResult);
       } catch (e) {
-        throw new Error("Invalid response from AI server");
+        throw new Error("Invalid response from AI server: " + textResult.substring(0, 100));
+      }
+
+      if (!response.ok) {
+        throw new Error(aiResult.error || `Server Error ${response.status}`);
       }
       
       if (aiResult.error) {
@@ -176,9 +217,9 @@ export default function NewAssessment() {
 
       setStep("review");
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Error contacting AI service. Please try again.");
+      alert(`AI Analysis Failed: ${err.message || "Please try again."}`);
       setStep("capture");
     }
   };

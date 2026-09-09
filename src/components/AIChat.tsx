@@ -45,8 +45,8 @@ export default function AIChat() {
       } else {
         setMessages([...newMessages, { role: 'model', text: data.error || 'Sorry, I encountered an error. Please try again later.' }]);
       }
-    } catch (err) {
-      setMessages([...newMessages, { role: 'model', text: 'Network error. Please try again.' }]);
+    } catch (err: any) {
+      setMessages([...newMessages, { role: 'model', text: `Error: ${err.message || 'Network error. Please try again.'}` }]);
     } finally {
       setIsLoading(false);
     }
