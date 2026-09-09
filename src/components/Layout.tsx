@@ -2,7 +2,6 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppStore } from '@/lib/store';
 import { LogOut, WifiOff, Menu, X, Home, FileText, Settings, Database, Activity, ScanFace, Moon, Sun } from 'lucide-react';
 import AIChat from './AIChat';
-import { PWAInstallButton } from './PWAInstallButton';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -93,7 +92,6 @@ export default function Layout() {
           <div className="h-8 w-px bg-slate-200 hidden sm:block"></div>
           
           <div className="flex items-center space-x-3">
-            <div className="mr-4 hidden sm:block"><PWAInstallButton /></div>
             <div className="text-right hidden sm:block">
               <p className="text-xs font-bold text-slate-700 dark:text-slate-200">{currentUser.name}</p>
               <p className="text-[10px] text-slate-500 uppercase">{currentUser.role}</p>
